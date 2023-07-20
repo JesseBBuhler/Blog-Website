@@ -229,11 +229,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\brayd\\OneDrive\\Desktop\\My_Thyme\\My_Thyme.csproj",
+      "projectUniqueName": "C:\\Users\\brayd\\OneDrive\\Desktop\\My_Thyme\\backend\\My_Thyme\\My_Thyme.csproj",
       "projectName": "My_Thyme",
-      "projectPath": "C:\\Users\\brayd\\OneDrive\\Desktop\\My_Thyme\\My_Thyme.csproj",
+      "projectPath": "C:\\Users\\brayd\\OneDrive\\Desktop\\My_Thyme\\backend\\My_Thyme\\My_Thyme.csproj",
       "packagesPath": "C:\\Users\\brayd\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\brayd\\OneDrive\\Desktop\\My_Thyme\\obj\\",
+      "outputPath": "C:\\Users\\brayd\\OneDrive\\Desktop\\My_Thyme\\backend\\My_Thyme\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\brayd\\AppData\\Roaming\\NuGet\\NuGet.Config",
