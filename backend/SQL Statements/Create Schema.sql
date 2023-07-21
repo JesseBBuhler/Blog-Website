@@ -1,6 +1,6 @@
 CREATE TABLE "roles" (
 	"role_id" INTEGER NOT NULL UNIQUE,
-	"role_name" INTEGER NOT NULL UNIQUE,
+	"role_name" TEXT NOT NULL UNIQUE,
 	PRIMARY KEY("role_id" AUTOINCREMENT)
 );
 
