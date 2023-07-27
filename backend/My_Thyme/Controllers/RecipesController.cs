@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using My_Thyme.Models;
-using System.Linq;
 using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,42 +8,41 @@ namespace My_Thyme.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PostsController : ControllerBase
+    public class RecipesController : ControllerBase
     {
         private APIFormatter formatter;
 
-        public PostsController(MythymeContext context)
+        public RecipesController(MythymeContext context)
         {
             formatter = new APIFormatter(context);
         }
-
-        // GET: api/Posts
+        // GET: api/Recipes
         [HttpGet]
         public string Get()
         {
-            return JsonSerializer.Serialize(formatter.Posts());
+            return JsonSerializer.Serialize(formatter.Recipes());
         }
 
-        // GET api/Posts/5
+        // GET api/Recipes/5
         [HttpGet("{id}")]
         public string Get(int id)
-        {    
-             return JsonSerializer.Serialize(formatter.Post(id));
+        {
+            return JsonSerializer.Serialize(formatter.Recipe(id));
         }
 
-        // POST api/Posts
+        // POST api/Recipes
         [HttpPost]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT api/Posts/5
+        // PUT api/Recipes/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/Posts/5
+        // DELETE api/Recipes/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
