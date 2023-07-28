@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "FnggCKd+8xtgF7+MPtqaF8vUjuknl05130HY08AOrujS961duyuuoBhmjDLK7BIRJf1UyW4UGKrgOaxGboPa7w==",
+  "dgSpecHash": "fuCyaCDLf2YYbJlZEu26GTYSqJqmSwLzouYdOzGNZf+7zuHkQYMUWh+FrYVumf2K7hNqdHByj6thOQ3IMkTlXQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\brayd\\OneDrive\\Desktop\\My_Thyme\\backend\\My_Thyme\\My_Thyme.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\brayd\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\brayd\\.nuget\\packages\\microsoft.aspnet.cors\\5.2.9\\microsoft.aspnet.cors.5.2.9.nupkg.sha512",
     "C:\\Users\\brayd\\.nuget\\packages\\microsoft.data.sqlite.core\\7.0.9\\microsoft.data.sqlite.core.7.0.9.nupkg.sha512",
     "C:\\Users\\brayd\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.9\\microsoft.entityframeworkcore.7.0.9.nupkg.sha512",
     "C:\\Users\\brayd\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\7.0.9\\microsoft.entityframeworkcore.abstractions.7.0.9.nupkg.sha512",
@@ -41,5 +42,16 @@
     "C:\\Users\\brayd\\.nuget\\packages\\system.text.encodings.web\\7.0.0\\system.text.encodings.web.7.0.0.nupkg.sha512",
     "C:\\Users\\brayd\\.nuget\\packages\\system.text.json\\7.0.0\\system.text.json.7.0.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Microsoft.AspNet.Cors 5.2.9' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net6.0'. This package may not be fully compatible with your project.",
+      "libraryId": "Microsoft.AspNet.Cors",
+      "targetGraphs": [
+        "net6.0"
+      ]
+    }
+  ]
 }

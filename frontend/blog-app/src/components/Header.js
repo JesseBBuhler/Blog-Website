@@ -6,7 +6,7 @@ import "./Header.css";
 function Header() {
   const [dropdown, setDropdown] = useState("hidden");
   const toggleDropdown = () => {
-    setDropdown(dropdown == "hidden" ? "unhidden" : "hidden");
+    setDropdown(dropdown === "hidden" ? "unhidden" : "hidden");
   };
 
   return (

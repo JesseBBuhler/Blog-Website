@@ -78,3 +78,4 @@ C:\Users\brayd\OneDrive\Desktop\My_Thyme\backend\My_Thyme\bin\Debug\net6.0\runti
 C:\Users\brayd\OneDrive\Desktop\My_Thyme\backend\My_Thyme\bin\Debug\net6.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\brayd\OneDrive\Desktop\My_Thyme\backend\My_Thyme\bin\Debug\net6.0\runtimes\win-x86\native\e_sqlite3.dll
 C:\Users\brayd\OneDrive\Desktop\My_Thyme\backend\My_Thyme\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
+C:\Users\brayd\OneDrive\Desktop\My_Thyme\backend\My_Thyme\bin\Debug\net6.0\System.Web.Cors.dll
