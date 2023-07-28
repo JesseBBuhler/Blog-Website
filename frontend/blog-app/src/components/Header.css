@@ -72,3 +72,23 @@ nav a {
 nav a:hover {
   background-color: var(--secondary-one);
 }
+
+@media screen and (min-width: 610px) {
+  .dropdownBtn {
+    display: none;
+  }
+
+  .dropdownContent {
+    position: relative;
+    display: block;
+  }
+
+  .navList {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  nav li {
+    border: none;
+  }
+}
