@@ -1,0 +1,27 @@
+.pageContainer {
+  background-color: var(--primary-three);
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-top: 1rem;
+}
+
+.buttonContainer button {
+  background: var(--primary-one);
+  color: inherit;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+.postContainer {
+  margin: 1rem;
+  padding: 1.5rem;
+  background-color: var(--primary-text);
+}

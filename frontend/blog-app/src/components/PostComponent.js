@@ -10,7 +10,8 @@ function PostComponent(props) {
   } else if (props.type === "h5") {
     return <h5>{props.content}</h5>;
   } else if (props.type === "img") {
-    return <img alt={props.content} />;
+    console.log(`img src: ${props.content.src}`);
+    return <img src={props.content.src} alt={props.content.alt} />;
   } else {
     return <p>{props.content}</p>;
   }
