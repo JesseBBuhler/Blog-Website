@@ -1,6 +1,6 @@
 ﻿namespace My_Thyme.returnObjects
 {
-    public class returnRecipe
+    public class getRecipe
     {
         public long recipeId { get; set; }
         public string? cuisine { get; set; }

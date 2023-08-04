@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using My_Thyme.APIObjects;
 using My_Thyme.Models;
 using System.Linq;
 using System.Text.Json;
@@ -23,20 +24,30 @@ namespace My_Thyme.Controllers
         [HttpGet]
         public string Get()
         {
-            return JsonSerializer.Serialize(formatter.Posts());
+            return JsonSerializer.Serialize(formatter.GetPosts());
         }
 
         // GET api/Posts/5
         [HttpGet("{id}")]
         public string Get(int id)
         {    
-             return JsonSerializer.Serialize(formatter.Post(id));
+             return JsonSerializer.Serialize(formatter.GetPost(id));
         }
 
         // POST api/Posts
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] postPost model)
         {
+            if (ModelState.IsValid) 
+            {
+                Post createdPost = formatter.PostPost(model);
+                
+                return CreatedAtAction(nameof(Get), new { id = createdPost.PostId }, createdPost);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         // PUT api/Posts/5

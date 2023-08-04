@@ -1,6 +1,6 @@
 ﻿namespace My_Thyme.returnObjects
 {
-    public class returnPost
+    public class getPost
     {
         public long postId { get; set; }
         public string? authorName { get; set; }

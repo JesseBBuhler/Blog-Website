@@ -20,14 +20,14 @@ namespace My_Thyme.Controllers
         [HttpGet]
         public string Get()
         {
-            return JsonSerializer.Serialize(formatter.Recipes());
+            return JsonSerializer.Serialize(formatter.GetRecipes());
         }
 
         // GET api/Recipes/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            return JsonSerializer.Serialize(formatter.Recipe(id));
+            return JsonSerializer.Serialize(formatter.GetRecipe(id));
         }
 
         // POST api/Recipes

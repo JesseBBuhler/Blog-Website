@@ -1,4 +1,5 @@
-﻿using My_Thyme.Models;
+﻿using My_Thyme.APIObjects;
+using My_Thyme.Models;
 using My_Thyme.returnObjects;
 using SQLitePCL;
 using System.Text.Json;
@@ -14,9 +15,9 @@ namespace My_Thyme
             _context = context;
         }
 
-        public returnPost Post(int id)
+        public getPost GetPost(int id)
         {
-            returnPost returnPost = new returnPost();
+            getPost returnPost = new getPost();
 
             var post = _context.Posts.Where(x => x.PostId == id).FirstOrDefault();
 
@@ -59,20 +60,37 @@ namespace My_Thyme
             return returnPost;
         }
 
-        public List<returnPost> Posts()
+        public List<getPost> GetPosts()
         {
-            List<returnPost> postsObject = new List<returnPost>();
+            List<getPost> postsObject = new List<getPost>();
             for (int i = 0; i < _context.Posts.ToList().Count; i++)
             {
-                postsObject.Add(Post(i));
+                postsObject.Add(GetPost(i));
             }
             return postsObject;
         }
 
-
-        public returnRecipe Recipe(int id)
+        public Post PostPost(postPost model)
         {
-            returnRecipe returnRecipe = new returnRecipe();
+            User author = _context.Users.Single(x => x.UserId == model.AuthorId);
+
+            Post newPost = new Post();
+            newPost.AuthorId = model.AuthorId;
+            newPost.Author = author;
+            newPost.PostText = model.PostText;
+            newPost.PublishDate = model.PublishDate;
+            newPost.PostTitle = model.PostTitle;
+            newPost.CoverImg = model.CoverImg;
+
+            _context.Posts.Add(newPost);
+            _context.SaveChanges();
+
+            return newPost;
+        }
+
+        public getRecipe GetRecipe(int id)
+        {
+            getRecipe returnRecipe = new getRecipe();
 
             var recipe = _context.Recipes.Where(x => x.RecipeId == id).FirstOrDefault();
 
@@ -130,15 +148,16 @@ namespace My_Thyme
             return returnRecipe;
         }
 
-        public List<returnRecipe> Recipes()
+        public List<getRecipe> GetRecipes()
         {
-            var recipesObject = new List<returnRecipe>();
+            var recipesObject = new List<getRecipe>();
             for (int i = 0; i < _context.Recipes.ToList().Count; i++)
             {
-                recipesObject.Add(Recipe(i));
+                recipesObject.Add(GetRecipe(i));
             }
             return recipesObject;
         }
+        
         
     }
 }
