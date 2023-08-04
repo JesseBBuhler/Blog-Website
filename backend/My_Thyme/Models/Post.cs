@@ -15,6 +15,8 @@ public partial class Post
 
     public string? PostTitle { get; set; }
 
+    public string? CoverImg { get; set; }
+
     public virtual User Author { get; set; } = null!;
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
