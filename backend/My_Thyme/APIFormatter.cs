@@ -15,11 +15,16 @@ namespace My_Thyme
             _context = context;
         }
 
-        public getPost GetPost(int id)
+        public (string Error, getPost Content) GetPost(int id)
         {
             getPost returnPost = new getPost();
+            string error = string.Empty;
 
-            var post = _context.Posts.Where(x => x.PostId == id).FirstOrDefault();
+            var post = _context.Posts.FirstOrDefault(x => x.PostId == id);
+            if (post == null)
+            {
+                error = "Record not found";
+            }
 
             var recipes = _context.Recipes
             .Where(recipe => _context.Posts
@@ -55,9 +60,10 @@ namespace My_Thyme
             returnPost.recipes = recipesSummary;
             returnPost.tags = tagList;
             returnPost.postText = post?.PostText;
-           
 
-            return returnPost;
+            (string Error, getPost Content) returnTuple = (error, returnPost);
+
+            return returnTuple;
         }
 
         public List<getPost> GetPosts()
@@ -65,13 +71,16 @@ namespace My_Thyme
             List<getPost> postsObject = new List<getPost>();
             for (int i = 0; i < _context.Posts.ToList().Count; i++)
             {
-                postsObject.Add(GetPost(i));
+                postsObject.Add(GetPost(i).Content);
             }
+
             return postsObject;
         }
 
-        public Post PostPost(postPost model)
+        public (string Error, Post Content) PostPost(postPost model)
         {
+            string error = string.Empty;
+
             User author = _context.Users.Single(x => x.UserId == model.AuthorId);
 
             Post newPost = new Post();
@@ -85,11 +94,15 @@ namespace My_Thyme
             _context.Posts.Add(newPost);
             _context.SaveChanges();
 
-            return newPost;
+            (string Error, Post Content) returnPost = (error, newPost);
+
+            return returnPost;
         }
 
-        public Post EditPost(postPost model)
+        public (string Error, Post Content) EditPost(postPost model)
         {
+            string error = string.Empty;
+
             User author = _context.Users.Single(x => x.UserId == model.AuthorId);
 
             Post postToEdit = _context.Posts.Single(x=> x.PostId == model.PostId);
@@ -102,11 +115,15 @@ namespace My_Thyme
 
             _context.SaveChanges();
 
-            return postToEdit;
+            (string Error, Post Content) returnPost = (error, postToEdit);
+
+            return returnPost;
         }
 
-        public getRecipe GetRecipe(int id)
+        public (string Error, getRecipe Content) GetRecipe(int id)
         {
+            string Error = string.Empty;
+
             getRecipe returnRecipe = new getRecipe();
 
             var recipe = _context.Recipes.Where(x => x.RecipeId == id).FirstOrDefault();
@@ -161,8 +178,9 @@ namespace My_Thyme
             returnRecipe.posts = postSummary;
             returnRecipe.tags = tagList;
 
+            (string Error, getRecipe Content) returnTuple = (Error, returnRecipe);
 
-            return returnRecipe;
+            return returnTuple;
         }
 
         public List<getRecipe> GetRecipes()
@@ -170,7 +188,7 @@ namespace My_Thyme
             var recipesObject = new List<getRecipe>();
             for (int i = 0; i < _context.Recipes.ToList().Count; i++)
             {
-                recipesObject.Add(GetRecipe(i));
+                recipesObject.Add(GetRecipe(i).Content);
             }
             return recipesObject;
         }

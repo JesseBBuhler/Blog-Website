@@ -18,9 +18,9 @@ namespace My_Thyme.Controllers
         }
         // GET: api/Recipes
         [HttpGet]
-        public string Get()
+        public IActionResult Get()
         {
-            return JsonSerializer.Serialize(formatter.GetRecipes());
+            return Ok(formatter.GetRecipes());
         }
 
         // GET api/Recipes/5
