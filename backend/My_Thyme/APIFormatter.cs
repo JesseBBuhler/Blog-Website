@@ -88,6 +88,23 @@ namespace My_Thyme
             return newPost;
         }
 
+        public Post EditPost(postPost model)
+        {
+            User author = _context.Users.Single(x => x.UserId == model.AuthorId);
+
+            Post postToEdit = _context.Posts.Single(x=> x.PostId == model.PostId);
+            postToEdit.AuthorId = model.AuthorId;
+            postToEdit.Author = author;
+            postToEdit.PostText = model.PostText;
+            postToEdit.PublishDate = model.PublishDate;
+            postToEdit.PostTitle = model.PostTitle;
+            postToEdit.CoverImg = model.CoverImg;
+
+            _context.SaveChanges();
+
+            return postToEdit;
+        }
+
         public getRecipe GetRecipe(int id)
         {
             getRecipe returnRecipe = new getRecipe();

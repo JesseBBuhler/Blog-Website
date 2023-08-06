@@ -52,8 +52,21 @@ namespace My_Thyme.Controllers
 
         // PUT api/Posts/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] postPost model)
         {
+            if (ModelState.IsValid)
+            {
+                try {
+                Post editedPost = formatter.EditPost(model);
+                return CreatedAtAction(nameof(Get), new { id = editedPost.PostId }, editedPost);
+                } 
+                catch
+                {
+                    return BadRequest("The requested record does not exist.");
+                }
+            }
+            else { return BadRequest(ModelState); }
+            
         }
 
         // DELETE api/Posts/5

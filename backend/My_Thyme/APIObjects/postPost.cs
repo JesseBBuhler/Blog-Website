@@ -2,6 +2,7 @@
 {
     public class postPost
     {
+        public long PostId { get; set; }
         public long AuthorId { get; set; }
         public string? PostText { get; set; }
         public string? PostTitle { get; set; }
