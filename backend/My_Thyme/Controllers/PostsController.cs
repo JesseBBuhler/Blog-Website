@@ -74,7 +74,7 @@ namespace My_Thyme.Controllers
                 return BadRequest(ModelState);
             }
 
-            var editedPost = formatter.EditPost(model);
+            var editedPost = formatter.EditPost(id, model);
 
             if (!string.IsNullOrEmpty(editedPost.Error))
             {
@@ -87,8 +87,18 @@ namespace My_Thyme.Controllers
 
         // DELETE api/Posts/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            bool deleted = formatter.DeletePost(id);
+
+            if (!deleted)
+            {
+                return NotFound(new { error = $"Record with ID {id} not found" });
+            }
+            else
+            {
+                return Ok(new { message = $"Record with ID {id} deleted successfully."});
+            }
         }
     }
 }
