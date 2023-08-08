@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using My_Thyme.Models;
+using My_Thyme.returnObjects;
 using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -25,9 +27,15 @@ namespace My_Thyme.Controllers
 
         // GET api/Recipes/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int id)
         {
-            return JsonSerializer.Serialize(formatter.GetRecipe(id));
+            var recipe = formatter.GetRecipe(id);
+            if (!string.IsNullOrEmpty(recipe.Error))
+            {
+                return NotFound(new { ErrorCode = 404, ErrorMessage = recipe.Error });
+            }
+
+            return Ok(recipe.Content);
         }
 
         // POST api/Recipes

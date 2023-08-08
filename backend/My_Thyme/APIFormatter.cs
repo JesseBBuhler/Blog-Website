@@ -147,38 +147,28 @@ namespace My_Thyme
 
         public (string Error, getRecipe Content) GetRecipe(int id)
         {
-            string Error = string.Empty;
+            (string Error, getRecipe Content) returnTuple = (string.Empty, new getRecipe());
+        
+            Recipe recipe = _context.Recipes.FirstOrDefault(x => x.RecipeId == id) ?? new Recipe();
 
-            getRecipe returnRecipe = new getRecipe();
+            if (recipe.RecipeId != id) {
+                returnTuple.Error = $"Recipe with ID {id} could not be found";
+                return returnTuple;
+            }
 
-            var recipe = _context.Recipes.Where(x => x.RecipeId == id).FirstOrDefault();
-
-            var posts = _context.Posts
+            List<long> posts = _context.Posts
             .Where(post => _context.Recipes
             .Where(recipe => recipe.RecipeId == id)
             .Any(recipe => recipe.Posts.Any(postRecipe => postRecipe.PostId == post.PostId)))
+            .Select(post => post.PostId)
             .ToList();
 
-            var tags = _context.Tags
+            List<long> tags = _context.Tags
             .Where(tag => _context.Recipes
             .Where(recipe => recipe.RecipeId == id)
             .Any(recipe => recipe.Tags.Any(recipeTag => recipeTag.TagId == tag.TagId)))
+            .Select(tag => tag.TagId)
             .ToList();
-
-            var author = _context.Users.Where(x => x.UserId == recipe.AuthorId).FirstOrDefault();
-
-            var postSummary = new Dictionary<long, string>();
-
-            for (int i = 0; i < posts.Count; i++)
-            {
-                postSummary.Add(posts[i].PostId, posts[i].PostTitle);
-            }
-
-            var tagList = new List<string>();
-            for (int i = 0; i < tags.Count; i++)
-            {
-                tagList.Add(tags[i].TagName);
-            }
 
             var ratings = _context.Ratings.Where(x => x.RecipeId == id).ToList();
             long sumRating = 0;
@@ -189,28 +179,17 @@ namespace My_Thyme
 
             long averageRating = sumRating / ratings.Count;
 
-
-            returnRecipe.recipeId = recipe.RecipeId;
-            returnRecipe.cuisine = recipe.Cuisine;
-            returnRecipe.prepTime = recipe.PrepTime;
-            returnRecipe.cookTime = recipe.CookTime;
-            returnRecipe.servings = recipe.Servings;
-            returnRecipe.author = author.UserName;
-            returnRecipe.ingredients = recipe.Ingredients;
-            returnRecipe.instructions = recipe.Instructions;
-            returnRecipe.title = recipe.Title;
-            returnRecipe.rating = averageRating;
-            returnRecipe.posts = postSummary;
-            returnRecipe.tags = tagList;
-
-            (string Error, getRecipe Content) returnTuple = (Error, returnRecipe);
+            returnTuple.Content.recipe = recipe;
+            returnTuple.Content.tags = tags;
+            returnTuple.Content.posts = posts;
+            returnTuple.Content.rating = averageRating;            
 
             return returnTuple;
         }
 
-        public List<getRecipe> GetRecipes()
+        public List<Recipe> GetRecipes()
         {
-            var recipesObject = new List<getRecipe>();
+            var recipesObject = new List<Recipe>();
             for (int i = 0; i < _context.Recipes.ToList().Count; i++)
             {
                 recipesObject.Add(GetRecipe(i).Content);

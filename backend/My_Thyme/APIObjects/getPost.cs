@@ -1,13 +1,11 @@
-﻿namespace My_Thyme.returnObjects
+﻿using My_Thyme.Models;
+
+namespace My_Thyme.returnObjects
 {
     public class getPost
     {
-        public long postId { get; set; }
-        public string? authorName { get; set; }
-        public string? publishDate { get; set; }
-        public string? postTitle { get; set; }
-        public Dictionary<long, string>? recipes { get; set; }
-        public List<string>? tags { get; set; }
-        public string? postText { get;set; }
+        public Post post { get; set; } = new Post();
+        public List<long> recipes { get; set; }  = new List<long>();
+        public List<long> tags { get; set; } = new List<long>();
     }
 }
