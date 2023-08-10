@@ -93,7 +93,7 @@ namespace My_Thyme.Controllers
 
             if (!deleted)
             {
-                return NotFound(new { error = $"Record with ID {id} not found" });
+                return NotFound(new { error = $"Record with ID {id} not found." });
             }
             else
             {

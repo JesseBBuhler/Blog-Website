@@ -17,55 +17,33 @@ namespace My_Thyme
 
         public (string Error, getPost Content) GetPost(int id)
         {
-            getPost returnPost = new getPost();
-            string error = string.Empty;
-            (string Error, getPost Content) returnTuple = (error, returnPost);
+            (string Error, getPost Content) returnTuple = (string.Empty, new getPost());
 
-            var post = _context.Posts.FirstOrDefault(x => x.PostId == id);
+            Post? post = _context.Posts.FirstOrDefault(x => x.PostId == id);
             if (post == null)
             {
-                error = "Record not found";
-                returnTuple = (error, returnPost);
-                
+                returnTuple.Error = "Record not found";
+                               
                 return returnTuple;
             }
 
-            var recipes = _context.Recipes
+            List<long> recipes = _context.Recipes
             .Where(recipe => _context.Posts
             .Where(post => post.PostId == id)
             .Any(post => post.Recipes.Any(postRecipe => postRecipe.RecipeId == recipe.RecipeId)))
+            .Select( recipe => recipe.RecipeId)
             .ToList();
 
-            var tags = _context.Tags
+            List<long> tags = _context.Tags
             .Where(tag => _context.Posts
             .Where(post => post.PostId == id)
             .Any(post => post.Tags.Any(postTag => postTag.TagId == tag.TagId)))
+            .Select(tag => tag.TagId)
             .ToList();
 
-            var author = _context.Users.Where(x => x.UserId == post.AuthorId).FirstOrDefault();
-
-            var recipesSummary = new Dictionary<long, string>();
-
-            for (int i = 0; i < recipes.Count; i++)
-            {
-                recipesSummary.Add(recipes[i].RecipeId, recipes[i].Title ?? "");
-            }
-
-            var tagList = new List<string>();
-            for (int i = 0; i < tags.Count; i++)
-            {
-                tagList.Add(tags[i].TagName);
-            }
-
-            returnPost.postId = post.PostId;
-            returnPost.authorName = author?.UserName;
-            returnPost.publishDate = post?.PublishDate;
-            returnPost.postTitle = post?.PostTitle;
-            returnPost.recipes = recipesSummary;
-            returnPost.tags = tagList;
-            returnPost.postText = post?.PostText;
-
-            returnTuple = (error, returnPost);
+            returnTuple.Content.post = post;
+            returnTuple.Content.recipes = recipes;
+            returnTuple.Content.tags = tags;
 
             return returnTuple;
         }
@@ -83,31 +61,26 @@ namespace My_Thyme
 
         public (string Error, Post Content) PostPost(postPost model)
         {
-            string error = string.Empty;
-            Post newPost = new Post();
-            (string Error, Post Content) returnPost = (error, newPost);
+            (string Error, Post Content) returnPost = (string.Empty, new Post());
 
             User author = _context.Users.Single(x => x.UserId == model.AuthorId);
 
             if(author is null)
             {
-                error = $"Author with id {model.AuthorId} is not found.";
-                returnPost = (error, newPost);
+                returnPost.Error = $"Author with id {model.AuthorId} is not found.";
                 return returnPost;
             }
 
             
-            newPost.AuthorId = model.AuthorId;
-            newPost.Author = author;
-            newPost.PostText = model.PostText;
-            newPost.PublishDate = model.PublishDate;
-            newPost.PostTitle = model.PostTitle;
-            newPost.CoverImg = model.CoverImg;
+            returnPost.Content.AuthorId = model.AuthorId;
+            returnPost.Content.Author = author;
+            returnPost.Content.PostText = model.PostText;
+            returnPost.Content.PublishDate = model.PublishDate;
+            returnPost.Content.PostTitle = model.PostTitle;
+            returnPost.Content.CoverImg = model.CoverImg;
 
-            _context.Posts.Add(newPost);
+            _context.Posts.Add(returnPost.Content);
             _context.SaveChanges();
-
-            returnPost = (error, newPost);
 
             return returnPost;
         }
@@ -187,9 +160,9 @@ namespace My_Thyme
             return returnTuple;
         }
 
-        public List<Recipe> GetRecipes()
+        public List<getRecipe> GetRecipes()
         {
-            var recipesObject = new List<Recipe>();
+            var recipesObject = new List<getRecipe>();
             for (int i = 0; i < _context.Recipes.ToList().Count; i++)
             {
                 recipesObject.Add(GetRecipe(i).Content);
@@ -197,8 +170,76 @@ namespace My_Thyme
             return recipesObject;
         }
 
-        
-        
-        
+        public (string Error, Recipe Content) PostRecipe(postRecipe model)
+        {
+            (string Error, Recipe Content) returnRecipe = (string.Empty, new Recipe());
+
+            User author = _context.Users.Single(x => x.UserId == model.AuthorId);
+
+            if (author is null)
+            {
+                returnRecipe.Error = $"Author with id {model.AuthorId} is not found.";
+               
+                return returnRecipe;
+            }
+
+            returnRecipe.Content.Cuisine = model.Cuisine;
+            returnRecipe.Content.PrepTime = model.PrepTime;
+            returnRecipe.Content.CookTime = model.CookTime;
+            returnRecipe.Content.Servings = model.Servings;
+            returnRecipe.Content.AuthorId = model.AuthorId;
+            returnRecipe.Content.Author = author;
+            returnRecipe.Content.Ingredients = model.Ingredients;
+            returnRecipe.Content.Instructions = model.Instructions;
+            returnRecipe.Content.Title = model.Title;
+
+            _context.Recipes.Add(returnRecipe.Content);
+            _context.SaveChanges();
+
+            return returnRecipe;
+        }
+
+
+        public (string Error, Recipe Content) EditRecipe(int id, postRecipe model)
+        {
+            (string Error, Recipe Content) returnRecipe = (string.Empty, new Recipe());
+
+            User author = _context.Users.Single(x => x.UserId == model.AuthorId);
+
+            if (author is null)
+            {
+                returnRecipe.Error = $"Author with id {model.AuthorId} is not found.";
+
+                return returnRecipe;
+            }
+
+            returnRecipe.Content.Cuisine = model.Cuisine;
+            returnRecipe.Content.PrepTime = model.PrepTime;
+            returnRecipe.Content.CookTime = model.CookTime;
+            returnRecipe.Content.Servings = model.Servings;
+            returnRecipe.Content.AuthorId = model.AuthorId;
+            returnRecipe.Content.Author = author;
+            returnRecipe.Content.Ingredients = model.Ingredients;
+            returnRecipe.Content.Instructions = model.Instructions;
+            returnRecipe.Content.Title = model.Title;
+
+            _context.SaveChanges();
+
+            return returnRecipe;
+        }
+
+
+        public bool DeleteRecipe(int id)
+        {
+            var recordToDelete = _context.Recipes.FirstOrDefault(e => e.RecipeId == id);
+            if (recordToDelete != null)
+            {
+                _context.Recipes.Remove(recordToDelete);
+                _context.SaveChanges();
+                return true;
+            }
+            else { return false; }
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using My_Thyme.APIObjects;
 using My_Thyme.Models;
 using My_Thyme.returnObjects;
 using System.Text.Json;
@@ -40,20 +41,56 @@ namespace My_Thyme.Controllers
 
         // POST api/Recipes
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] postRecipe model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var createdRecipe = formatter.PostRecipe(model);
+
+            if(!string.IsNullOrEmpty(createdRecipe.Error))
+            {
+                return NotFound(new { ErrorCode = 404, ErrorMessage =  createdRecipe.Error });
+            }
+
+            return CreatedAtAction(nameof(Get), new { id = createdRecipe.Content.RecipeId }, createdRecipe.Content);
         }
 
         // PUT api/Recipes/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] postRecipe model)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var editedRecipe = formatter.EditRecipe(id, model);
+
+            if(!string.IsNullOrEmpty(editedRecipe.Error))
+            {
+                return NotFound(new { ErrorCode = 404, ErrorMessage = editedRecipe.Error });
+            }
+
+            return CreatedAtAction(nameof(Get), new {id=editedRecipe.Content.RecipeId}, editedRecipe.Content);
         }
 
         // DELETE api/Recipes/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            bool deleted = formatter.DeleteRecipe(id);
+
+            if(!deleted)
+            {
+                return NotFound(new { error = $"Record with ID {id} not found." });
+            }
+            else
+            {
+                return Ok(new { message = $"Record with ID {id} deleted successfully." });
+            }
         }
     }
 }
