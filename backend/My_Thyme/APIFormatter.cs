@@ -15,7 +15,7 @@ namespace My_Thyme
             _context = context;
         }
 
-        public (string Error, getPost Content) GetPost(int id)
+        public (string Error, getPost Content) GetPost(long id)
         {
             (string Error, getPost Content) returnTuple = (string.Empty, new getPost());
 
@@ -51,9 +51,10 @@ namespace My_Thyme
         public List<getPost> GetPosts()
         {
             List<getPost> postsObject = new List<getPost>();
-            for (int i = 0; i < _context.Posts.ToList().Count; i++)
+            List<Post> posts = _context.Posts.ToList();
+            for (int i = 0; i < posts.Count; i++)
             {
-                postsObject.Add(GetPost(i).Content);
+                postsObject.Add(GetPost(posts[i].PostId).Content);
             }
 
             return postsObject;
@@ -118,7 +119,7 @@ namespace My_Thyme
             else { return false; }
         }
 
-        public (string Error, getRecipe Content) GetRecipe(int id)
+        public (string Error, getRecipe Content) GetRecipe(long id)
         {
             (string Error, getRecipe Content) returnTuple = (string.Empty, new getRecipe());
         
@@ -162,10 +163,12 @@ namespace My_Thyme
 
         public List<getRecipe> GetRecipes()
         {
-            var recipesObject = new List<getRecipe>();
-            for (int i = 0; i < _context.Recipes.ToList().Count; i++)
+            List<getRecipe> recipesObject = new List<getRecipe>();
+            List<Recipe> recipes = _context.Recipes.ToList();
+
+            for (int i = 0; i < recipes.Count; i++)
             {
-                recipesObject.Add(GetRecipe(i).Content);
+                recipesObject.Add(GetRecipe(recipes[i].RecipeId).Content);
             }
             return recipesObject;
         }
