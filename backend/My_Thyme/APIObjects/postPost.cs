@@ -7,6 +7,6 @@
         public string? PostTitle { get; set; }
         public string PublishDate { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
         public string? CoverImg { get; set; }
-
+        public List<string> Tags { get; set; } = new List<string>();
     }
 }

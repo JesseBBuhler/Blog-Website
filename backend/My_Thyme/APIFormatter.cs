@@ -73,6 +73,21 @@ namespace My_Thyme
                 return returnPost;
             }
 
+
+            for (int i = 0; i < model.Tags.Count; i++)
+            {
+                var tag = _context.Tags.FirstOrDefault(tag => tag.TagName == model.Tags[i]);
+                
+                if(tag is null)
+                {
+                    tag = new Tag();
+                    tag.TagName = model.Tags[i];
+                    _context.Tags.Add(tag);
+                }
+
+                returnPost.Content.Tags.Add(tag);
+                
+            }
             
             returnPost.Content.AuthorId = model.AuthorId;
             returnPost.Content.Author = author;
@@ -94,6 +109,23 @@ namespace My_Thyme
             User author = _context.Users.Single(x => x.UserId == model.AuthorId);
 
             Post postToEdit = _context.Posts.Single(x=> x.PostId == id);
+            postToEdit.Tags.Clear();
+
+            for (int i = 0; i < model.Tags.Count; i++)
+            {
+                var tag = _context.Tags.FirstOrDefault(tag => tag.TagName == model.Tags[i]);
+
+                if (tag is null)
+                {
+                    tag = new Tag();
+                    tag.TagName = model.Tags[i];
+                    _context.Tags.Add(tag);
+                }
+
+                postToEdit.Tags.Add(tag);
+
+            }
+
             postToEdit.AuthorId = model.AuthorId;
             postToEdit.Author = author;
             postToEdit.PostText = model.PostText;
@@ -323,6 +355,61 @@ namespace My_Thyme
 
             }
 
+
+            return returnTuple;
+        }
+
+        public List<Tag> GetTags()
+        {
+            List<Tag> tags = _context.Tags.ToList();
+
+            return tags;
+        }
+
+        public (Tag tag, String error) GetTag(long id)
+        {
+            (Tag tag, String error) returnTuple = (new Tag(), string.Empty);
+            var tag = _context.Tags.Find(id);
+
+            if (tag != null)
+            {
+                returnTuple.tag = tag;
+            }
+            else
+            {
+                returnTuple.error = $"Tag with id-{id} could not be found.";
+            }
+
+            return returnTuple;
+        }
+
+        public (bool success, string error) DeleteTag(long id)
+        {
+            (bool success, String error) returnTuple = (false,  string.Empty);
+
+            var tag = _context.Tags.FirstOrDefault(t => t.TagId == id);
+            if (tag != null)
+            {
+                 var posts = _context.Posts
+                .Include(p => p.Tags)
+                .Where(post => _context.Tags
+                .Where(tag => tag.TagId == id)
+                .Any(tag => tag.Posts.Any(postTag => postTag.PostId == post.PostId)))
+                .ToList();
+
+                for(int i = 0; i < posts.Count; i++)
+                {
+                    posts[i].Tags.Remove(tag);
+                }
+
+                _context.Tags.Remove(tag);
+                _context.SaveChanges();
+                returnTuple.success = true;
+            }
+            else 
+            {
+                returnTuple.error = $"Tag with id-{id} could not be found.";
+            }
 
             return returnTuple;
         }
