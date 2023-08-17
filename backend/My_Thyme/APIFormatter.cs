@@ -1,4 +1,5 @@
-﻿using My_Thyme.APIObjects;
+﻿using Microsoft.EntityFrameworkCore;
+using My_Thyme.APIObjects;
 using My_Thyme.Models;
 using My_Thyme.returnObjects;
 using SQLitePCL;
@@ -151,7 +152,7 @@ namespace My_Thyme
                 sumRating += ratings[i].Rating1;
             }
 
-            long averageRating = sumRating / ratings.Count;
+            long averageRating = sumRating / (ratings.Count != 0 ? ratings.Count : 1); // prevent divide by zero
 
             returnTuple.Content.recipe = recipe;
             returnTuple.Content.tags = tags;
@@ -242,6 +243,88 @@ namespace My_Thyme
                 return true;
             }
             else { return false; }
+        }
+
+        public (bool success, string error) CreateRPAssociation(long recipeID, long postID)
+        {
+            (bool success, string error) returnTuple = (false, string.Empty);
+
+            var post = _context.Posts.Find(postID);
+            var recipe = _context.Recipes.Find(recipeID);
+
+            
+
+            if (post == null)
+            {
+                returnTuple.error += $"Post with id of ${postID} could not be found.\n";
+            }
+
+            if (recipe == null)
+            {
+                returnTuple.error += $"Recipe with id of ${recipeID} could not be found.\n";
+            }
+
+            if (post != null && recipe != null)
+            {
+                var existingPost = recipe.Posts.FirstOrDefault(p => p.PostId == post.PostId);
+                if (existingPost != null)
+                {
+                    
+                     returnTuple.error += $"post-{postID} and recipe-{recipeID} already associated.";
+                        
+                }
+                else
+                {
+                    recipe.Posts.Add(post);
+                    _context.SaveChanges();
+                    returnTuple.success = true;
+                }
+                
+                
+            }         
+
+
+            return returnTuple;
+        }
+
+        public (bool success, string error) DeleteRPAssociation(long recipeID, long postID)
+        {
+            (bool success, string error) returnTuple = (false, string.Empty);
+            var post = _context.Posts.Find(postID);
+            var recipe = _context.Recipes
+                .Include(r => r.Posts)
+                .FirstOrDefault(r => r.RecipeId == recipeID);
+
+            if (post == null)
+            {
+                returnTuple.error += $"Post with id of ${postID} could not be found.\n";
+            }
+
+            if (recipe == null)
+            {
+                returnTuple.error += $"Recipe with id of ${recipeID} could not be found.\n";
+            }
+
+            if (post != null && recipe != null)
+            {
+                var existingPost = recipe.Posts.FirstOrDefault(p => p.PostId == post.PostId);
+                if (existingPost != null)
+                {
+                    
+                    recipe.Posts.Remove(existingPost);
+                    _context.SaveChanges();
+                    returnTuple.success = true;
+                }
+                else
+                {
+                    returnTuple.error += $"post-{postID} and recipe-{recipeID} are not associated.";
+                }
+                
+
+            }
+
+
+            return returnTuple;
         }
 
     }
