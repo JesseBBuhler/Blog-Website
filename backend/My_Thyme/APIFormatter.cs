@@ -106,10 +106,24 @@ namespace My_Thyme
         {
             string error = string.Empty;
 
+            Post postToEdit = _context.Posts
+                .Include(p => p.Tags)
+                .Single(x => x.PostId == id);
+
+            (string Error, Post Content) returnPost = (error, postToEdit);
+            //
+
             User author = _context.Users.Single(x => x.UserId == model.AuthorId);
 
-            Post postToEdit = _context.Posts.Single(x=> x.PostId == id);
-            postToEdit.Tags.Clear();
+            if (author is null)
+            {
+                returnPost.Error = $"Author with id {model.AuthorId} is not found.";
+
+                return returnPost;
+            }
+            //
+            
+            returnPost.Content.Tags.Clear();
 
             for (int i = 0; i < model.Tags.Count; i++)
             {
@@ -122,20 +136,18 @@ namespace My_Thyme
                     _context.Tags.Add(tag);
                 }
 
-                postToEdit.Tags.Add(tag);
+                returnPost.Content.Tags.Add(tag);
 
             }
 
-            postToEdit.AuthorId = model.AuthorId;
-            postToEdit.Author = author;
-            postToEdit.PostText = model.PostText;
-            postToEdit.PublishDate = model.PublishDate;
-            postToEdit.PostTitle = model.PostTitle;
-            postToEdit.CoverImg = model.CoverImg;
+            returnPost.Content.AuthorId = model.AuthorId;
+            returnPost.Content.Author = author;
+            returnPost.Content.PostText = model.PostText;
+            returnPost.Content.PublishDate = model.PublishDate;
+            returnPost.Content.PostTitle = model.PostTitle;
+            returnPost.Content.CoverImg = model.CoverImg;
 
             _context.SaveChanges();
-
-            (string Error, Post Content) returnPost = (error, postToEdit);
 
             return returnPost;
         }
@@ -219,6 +231,23 @@ namespace My_Thyme
                 return returnRecipe;
             }
 
+            returnRecipe.Content.Tags.Clear();
+
+            for (int i = 0; i < model.Tags.Count; i++)
+            {
+                var tag = _context.Tags.FirstOrDefault(tag => tag.TagName == model.Tags[i]);
+
+                if (tag is null)
+                {
+                    tag = new Tag();
+                    tag.TagName = model.Tags[i];
+                    _context.Tags.Add(tag);
+                }
+
+                returnRecipe.Content.Tags.Add(tag);
+
+            }
+
             returnRecipe.Content.Cuisine = model.Cuisine;
             returnRecipe.Content.PrepTime = model.PrepTime;
             returnRecipe.Content.CookTime = model.CookTime;
@@ -238,7 +267,21 @@ namespace My_Thyme
 
         public (string Error, Recipe Content) EditRecipe(int id, postRecipe model)
         {
-            (string Error, Recipe Content) returnRecipe = (string.Empty, new Recipe());
+            /*string error = string.Empty;
+
+            Post postToEdit = _context.Posts
+                .Include(p => p.Tags)
+                .Single(x => x.PostId == id);
+
+            (string Error, Post Content) returnPost = (error, postToEdit);*/
+
+            string error = string.Empty;
+
+            Recipe recipeToEdit = _context.Recipes
+                .Include(r => r.Tags)
+                .Single(r => r.RecipeId == id);
+
+            (string Error, Recipe Content) returnRecipe = (error, recipeToEdit);
 
             User author = _context.Users.Single(x => x.UserId == model.AuthorId);
 
@@ -247,6 +290,23 @@ namespace My_Thyme
                 returnRecipe.Error = $"Author with id {model.AuthorId} is not found.";
 
                 return returnRecipe;
+            }
+
+            returnRecipe.Content.Tags.Clear();
+
+            for (int i = 0; i < model.Tags.Count; i++)
+            {
+                var tag = _context.Tags.FirstOrDefault(tag => tag.TagName == model.Tags[i]);
+
+                if (tag is null)
+                {
+                    tag = new Tag();
+                    tag.TagName = model.Tags[i];
+                    _context.Tags.Add(tag);
+                }
+
+                returnRecipe.Content.Tags.Add(tag);
+
             }
 
             returnRecipe.Content.Cuisine = model.Cuisine;
@@ -400,6 +460,18 @@ namespace My_Thyme
                 for(int i = 0; i < posts.Count; i++)
                 {
                     posts[i].Tags.Remove(tag);
+                }
+
+                var recipes = _context.Recipes
+                .Include(r => r.Tags)
+                .Where(recipe => _context.Tags
+                .Where(tag => tag.TagId == id)
+                .Any(tag => tag.Recipes.Any(recipeTag => recipeTag.RecipeId == recipe.RecipeId)))
+                .ToList();
+
+                for (int i = 0; i < recipes.Count; i++)
+                {
+                    recipes[i].Tags.Remove(tag);
                 }
 
                 _context.Tags.Remove(tag);
